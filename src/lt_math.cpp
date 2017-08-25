@@ -24,14 +24,18 @@ Mat4::Mat4(f32 m00, f32 m01, f32 m02, f32 m03,
     , m20(m20), m21(m21), m22(m22), m23(m23)
     , m30(m30), m31(m31), m32(m32), m33(m33) {}
 
-Mat4 mat4_identity() {
+Mat4
+mat4_identity()
+{
     return Mat4(1.0f, 0.0f, 0.0f, 0.0f,
                 0.0f, 1.0f, 0.0f, 0.0f,
                 0.0f, 0.0f, 1.0f, 0.0f,
                 0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-Mat4 mat4_perspective(f32 fovy, f32 aspect_ratio, f32 znear, f32 zfar) {
+Mat4
+mat4_perspective(f32 fovy, f32 aspect_ratio, f32 znear, f32 zfar)
+{
     f32 fovy_rad = fovy / 180 * LT_PI;
     f32 f = 1.0/tanf(fovy_rad/2.0);
     f32 zz = (zfar+znear)/(znear-zfar);
@@ -44,7 +48,9 @@ Mat4 mat4_perspective(f32 fovy, f32 aspect_ratio, f32 znear, f32 zfar) {
         0,                0,               -1,                         0);
 }
 
-Mat4 mat4_look_at(const Vec3f eye, const Vec3f center, const Vec3f up) {
+Mat4
+mat4_look_at(const Vec3f eye, const Vec3f center, const Vec3f up)
+{
     Vec3f f = vec_normalize(center - eye);
     Vec3f s = vec_normalize(vec_cross(f, up));
     Vec3f u = vec_cross(s, f);

@@ -1,9 +1,9 @@
-#ifndef INCLUDE_LT_CORE_HPP
-#define INCLUDE_LT_CORE_HPP
+#ifndef LT_CORE_HPP
+#define LT_CORE_HPP
 
-#include <stddef.h>
-#include <stdint.h>
-#include <stdlib.h>
+#include <cstddef>
+#include <cstdint>
+#include <cstdlib>
 
 // Make type names more consistent and easier to write.
 typedef uint8_t     u8;
@@ -44,14 +44,14 @@ static_assert(sizeof(f64) == 8, "f64 should have 8 bytes");
 // Macros that make working with c either better or more consistent.
 //
 
-#ifndef global_variable
-#define global_variable static  // Global variables
+#ifndef lt_global_variable
+#define lt_global_variable static  // Global variables
 #endif
-#ifndef internal
-#define internal        static  // Internal linkage
+#ifndef lt_internal
+#define lt_internal        static  // Internal linkage
 #endif
-#ifndef local_persist
-#define local_persist   static  // Local persisting variables
+#ifndef lt_local_persist
+#define lt_local_persist   static  // Local persisting variables
 #endif
 
 #ifndef LT_Unused
@@ -118,81 +118,16 @@ static_assert(sizeof(f64) == 8, "f64 should have 8 bytes");
 #  endif // LT_DEBUG
 #endif // LT_Assert
 
-internal inline bool
-lt_is_little_endian()
+namespace lt
+{
+
+lt_internal inline bool
+is_little_endian()
 {
     i32 num = 1;
     return (*(char*)&num == 1);
 }
 
-void get_display_dpi(i32 *x, i32 *y);
-
-#endif // INCLUDE_LT_H
-
-
-/* =========================================================================
- *
- *
- *
- *
- *
- *
- *  Implementation
- *
- *
- *
- *
- *
- *
- * ========================================================================= */
-
-#if defined(LT_IMPLEMENTATION) && !defined(LT_IMPLEMENTATION_DONE)
-#define LT_IMPLEMENTATION_DONE
-
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#if defined(__unix__)
-#include <sys/stat.h>
-#include <X11/extensions/Xrandr.h>
-#endif
-
-///////////////////////////////////////////////////////
-//
-// Utils
-//
-
-void
-lt_get_display_dpi(i32 *x, i32 *y)
-{
-#ifdef __unix__
-    i32 scr = 0; /* Screen number */
-
-    if ((NULL == x) || (NULL == y)) { return; }
-
-    char *displayname = NULL;
-    Display *dpy = XOpenDisplay(displayname);
-
-    /*
-     * there are 2.54 centimeters to an inch; so there are 25.4 millimeters.
-     *
-     *     dpi = N pixels / (M millimeters / (25.4 millimeters / 1 inch))
-     *         = N pixels / (M inch / 25.4)
-     *         = N * 25.4 pixels / M inch
-     */
-    f64 xres = ((((f64) DisplayWidth(dpy,scr)) * 25.4) /
-                ((f64) DisplayWidthMM(dpy,scr)));
-    f64 yres = ((((f64) DisplayHeight(dpy,scr)) * 25.4) /
-                ((f64) DisplayHeightMM(dpy,scr)));
-
-    *x = (i32)(xres + 0.5);
-    *y = (i32)(yres + 0.5);
-
-    XCloseDisplay (dpy);
-#else
-    _Static_assert(false, "Not Implemented");
-#endif
 }
 
-#endif // LT_IMPLEMENTATION
+#endif // LT_CORE_HPP

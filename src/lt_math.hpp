@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#include "lt.hpp"
+#include "lt_core.hpp"
 #include "math.h"
 
 #ifndef LT_PI
@@ -16,7 +16,8 @@
 //
 // Definition of a vector structure.
 //
-union Vec2i {
+union Vec2i
+{
     i32 val[2];
     struct {
         i32 x, y;
@@ -25,7 +26,8 @@ union Vec2i {
     Vec2i(i32 x, i32 y): x(x), y(y) {}
 };
 
-union Vec2f {
+union Vec2f
+{
     f32 val[2];
     struct {
         f32 x, y;
@@ -34,7 +36,8 @@ union Vec2f {
     Vec2f(f32 x, f32 y): x(x), y(y) {}
 };
 
-union Vec3f {
+union Vec3f
+{
     f32 val[3];
     struct {
         f32 x, y, z;
@@ -49,7 +52,8 @@ union Vec3f {
     inline Vec3f operator*(f32 k) {return Vec3f(x*k, y*k, z*k);}
 };
 
-union Vec3i {
+union Vec3i
+{
     i32 val[3];
     struct {
         i32 x, y, z;
@@ -66,7 +70,8 @@ union Vec3i {
     inline Vec3i operator+(const Vec3i v) {return Vec3i(x+v.x, y+v.y, z+v.z);}
 };
 
-union Vec4i {
+union Vec4i
+{
     i32 val[4];
     struct {
         i32 x, y, z, w;
@@ -128,7 +133,8 @@ vec_cross(const Vec3f a, const Vec3f b)
 //
 // Column major
 //
-union Mat4 {
+union Mat4
+{
     f32 m[4][4];
     struct {
         f32 m00, m01, m02, m03;
