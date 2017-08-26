@@ -10,122 +10,140 @@
 #define LT_PI 3.14159265358979323846
 #endif
 
+struct Point3f
+{
+    f32 x, y, z;
+
+    Point3f(f32 x, f32 y, f32 z) : x(x), y(y), z(z) {}
+};
+
+struct Size2f
+{
+    f32 width, height;
+
+    Size2f(f32 width, f32 height) : width(width), height(height) {}
+};
 /////////////////////////////////////////////////////////
 //
 // Vector
 //
 // Definition of a vector structure.
 //
-union Vec2i
+
+template<typename T>
+union Vec2
 {
-    i32 val[2];
+    T val[2];
     struct {
-        i32 x, y;
+        T x, y;
     };
 
-    Vec2i(i32 x, i32 y): x(x), y(y) {}
+    Vec2(T x, T y): x(x), y(y) {}
+
+    inline Vec2<T> norm() const
+    {
+        f32 size = length();
+        LT_Assert(size >= 0);
+        return Vec2<T>(x / size, y / size);
+    }
+
+    inline f32 length() {return sqrt(x*x + y*y);}
+    inline Vec2<T> operator-(Vec2<T> rhs) const {return Vec2<T>(x - rhs.x, y - rhs.y);}
+
+    template<typename K>
+    inline Vec2<T> operator*(K k) const {return Vec2<T>(x * k, y * k);}
 };
 
-union Vec2f
+typedef Vec2<i32> Vec2i;
+typedef Vec2<f32> Vec2f;
+
+template<typename T>
+union Vec3
 {
-    f32 val[2];
+    T val[3];
     struct {
-        f32 x, y;
+        T x, y, z;
+    };
+    struct {
+        T r, g, b;
     };
 
-    Vec2f(f32 x, f32 y): x(x), y(y) {}
+    Vec3() : x(0), y(0), z(0) {}
+    Vec3(T x, T y, T z) : x(x), y(y), z(z) {}
+
+    inline Vec3<T> norm()
+    {
+        f32 size = length();
+        LT_Assert(size >= 0);
+        return Vec3<T>(x / size, y / size, z / size);
+    }
+
+    inline f32 length() {return sqrt(x*x + y*y + z*z);}
+
+    template<typename K>
+    inline Vec3<T> operator*(K k) {return Vec3<T>(x*k, y*k, z*k);}
+
+    inline Vec3<T> operator-(Vec3<T> rhs) const {return Vec3<T>(x-rhs.x, y-rhs.y, z-rhs.z);}
+    inline Vec3<T> operator-() const {return Vec3<T>(-x, -y, -z);}
+    inline Vec3<T> operator+(Vec3<T> rhs) const {return Vec3<T>(x+rhs.x, y+rhs.y, z+rhs.z);}
 };
 
-union Vec3f
+typedef Vec3<i32> Vec3i;
+typedef Vec3<f32> Vec3f;
+
+template<typename T>
+union Vec4
 {
-    f32 val[3];
+    T val[4];
     struct {
-        f32 x, y, z;
+        T x, y, z, w;
     };
     struct {
-        f32 r, g, b;
+        T r, g, b, a;
     };
 
-    Vec3f();
-    Vec3f(f32 x, f32 y, f32 z);
+    Vec4(): x(0), y(0), z(0), w(0) {}
+    Vec4(T x, T y, T z, T w): x(x), y(y), z(z), w(w) {}
+    Vec4(Vec3<T> v, T w): x(v.x), y(v.y), z(v.z), w(w) {}
 
-    inline Vec3f operator*(f32 k) {return Vec3f(x*k, y*k, z*k);}
+    inline Vec4<T> norm() const
+    {
+        f32 size = length();
+        LT_Assert(size >= 0);
+        return Vec4<T>(x / size, y / size, z / size, w / size);
+    }
+
+    inline f32 length() const {return sqrt(x*x + y*y + z*z + w*w);}
 };
 
-union Vec3i
+typedef Vec4<i32> Vec4i;
+typedef Vec4<f32> Vec4f;
+
+namespace lt
 {
-    i32 val[3];
-    struct {
-        i32 x, y, z;
-    };
-    struct {
-        i32 r, g, b;
-    };
 
-    Vec3i();
-    Vec3i(i32 x, i32 y, i32 z);
+template<typename T> inline T
+dot(const Vec2<T> a, const Vec2<T> b) {return (a.x * b.x) + (a.y * b.y);}
 
-    inline Vec3f operator*(f32 k) {return Vec3f((f32)x*k, (f32)y*k, (f32)z*k);}
-    inline Vec3i operator*(i32 k) {return Vec3i(x*k, y*k, z*k);}
-    inline Vec3i operator+(const Vec3i v) {return Vec3i(x+v.x, y+v.y, z+v.z);}
-};
+template<typename T> inline T
+dot(const Vec3<T> lhs, const Vec3<T> rhs) {return (lhs.x * rhs.x) + (lhs.y * rhs.y) + (lhs.z * rhs.z);}
 
-union Vec4i
+template<typename T> inline Vec2<T>
+projection(const Vec2<T> p, const Vec2<T> plane)
 {
-    i32 val[4];
-    struct {
-        i32 x, y, z, w;
-    };
-    struct {
-        i32 r, g, b, a;
-    };
-
-    Vec4i();
-    Vec4i(i32 x, i32 y, i32 z, i32 w);
-    Vec4i(Vec3i v, i32 w): x(v.x), y(v.y), z(v.z), w(w) {}
-    Vec4i(Vec3f v, i32 w): x(v.x), y(v.y), z(v.z), w(w) {}
-};
-
-
-inline Vec2i operator-(Vec2i lhs, Vec2i rhs) {return Vec2i(lhs.x - rhs.x, lhs.y - rhs.y);}
-inline Vec2i operator*(Vec2i v, i32 k) {return Vec2i(v.x * k, v.y * k);}
-inline Vec2i operator*(i32 k, Vec2i v) {return Vec2i(v.x * k, v.y * k);}
-inline Vec2i operator-(Vec2i v) {return Vec2i(-v.x, -v.y);}
-inline Vec3f operator-(Vec3f a, Vec3f b) {return Vec3f(a.x-b.x, a.y-b.y, a.z-b.z);}
-inline Vec3f operator+(Vec3f a, Vec3f b) {return Vec3f(a.x+b.x, a.y+b.y, a.z+b.z);}
-inline Vec3f operator-(Vec3f v) {return Vec3f(-v.x, -v.y, -v.z);}
-inline f32 vec_len(const Vec3f v) {return sqrt(v.x*v.x + v.y*v.y + v.z*v.z);}
-
-inline i32 vec_dot(const Vec2i a, const Vec2i b) {return (a.x * b.x) + (a.y * b.y);}
-inline f32
-vec_dot(const Vec3f lhs, const Vec3f rhs)
-{
-    return (lhs.x * rhs.x) + (lhs.y * rhs.y) + (lhs.z * rhs.z);
-}
-
-inline Vec3f
-vec_normalize(const Vec3f vec)
-{
-    f32 size = vec_len(vec);
-    LT_Assert(size >= 0);
-    return Vec3f(vec.x / size, vec.y / size, vec.z / size);
-}
-
-inline Vec2i
-vec_proj(const Vec2i p, const Vec2i plane)
-{
-    i32 alpha = vec_dot(p, plane) / vec_dot(plane, plane);
+    f32 alpha = lt::dot(p, plane) / lt::dot(plane, plane);
     return alpha * plane;
 }
 
-inline Vec3f
-vec_cross(const Vec3f a, const Vec3f b)
+template<typename T> inline Vec3<T>
+cross(const Vec3<T> a, const Vec3<T> b)
 {
-    return Vec3f((a.y * b.z) - (a.z * b.y),
+    return Vec3<T>((a.y * b.z) - (a.z * b.y),
                  (a.z * b.x) - (a.x * b.z),
                  (a.x * b.y) - (a.y * b.x));
 }
 
+}
 
 /////////////////////////////////////////////////////////
 //
@@ -133,24 +151,40 @@ vec_cross(const Vec3f a, const Vec3f b)
 //
 // Column major
 //
+template<typename T>
 union Mat4
 {
-    f32 m[4][4];
-    struct {
-        f32 m00, m01, m02, m03;
-        f32 m10, m11, m12, m13;
-        f32 m20, m21, m22, m23;
-        f32 m30, m31, m32, m33;
-    };
+    Mat4(T diag);
+    Mat4(T m00, T m01, T m02, T m03,
+         T m10, T m11, T m12, T m13,
+         T m20, T m21, T m22, T m23,
+         T m30, T m31, T m32, T m33);
 
-    Mat4();
-    Mat4(f32 m00, f32 m01, f32 m02, f32 m03,
-         f32 m10, f32 m11, f32 m12, f32 m13,
-         f32 m20, f32 m21, f32 m22, f32 m23,
-         f32 m30, f32 m31, f32 m32, f32 m33);
+    inline Vec4<T> operator()(isize row, isize col) const
+    {
+        return m_col[row][col];
+    }
+
+    inline T *data() const
+    {
+        return (T*)&m_col[0].val[0];
+    }
+
+private:
+    Vec4<T> m_col[4];
 };
 
-Mat4 mat4_identity   ();
-Mat4 mat4_perspective(f32 fovy, f32 aspect_ratio, f32 znear, f32 zfar);
-Mat4 mat4_look_at    (const Vec3f eye, const Vec3f center, const Vec3f up);
+typedef Mat4<f32> Mat4f;
+
+namespace lt
+{
+
+template<typename T> Mat4<T>
+perspective(f32 fovy, f32 aspect_ratio, f32 znear, f32 zfar);
+
+template<typename T> Mat4<T>
+look_at(const Vec3<T> eye, const Vec3<T> center, const Vec3<T> up);
+
+}
+
 #endif // LT_MATH_HPP

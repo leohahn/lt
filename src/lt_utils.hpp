@@ -10,10 +10,26 @@ namespace lt
 struct Logger
 {
     template<typename... Args> void
-    operator()(const Args&... args)
+    log(const Args&... args)
     {
         std::ostringstream msg;
-        msg << "[" << m_name << "]  ";
+        msg << "[" << m_name << "] ";
+        log_recursive(msg, args...);
+    }
+
+    template<typename... Args> void
+    warn(const Args&... args)
+    {
+        std::ostringstream msg;
+        msg << "[" << m_name << "] Warning: ";
+        log_recursive(msg, args...);
+    }
+
+    template<typename... Args> void
+    error(const Args&... args)
+    {
+        std::ostringstream msg;
+        msg << "[" << m_name << "] Error: ";
         log_recursive(msg, args...);
     }
 
