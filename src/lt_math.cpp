@@ -29,6 +29,15 @@ Mat4<T>::Mat4(T diag)
     m_col[3] = Vec4<T>(0, 0, 0, diag);
 }
 
+template<typename T>
+Mat4<T>::Mat4()
+{
+    m_col[0] = Vec4<T>(1, 0, 0, 0);
+    m_col[1] = Vec4<T>(0, 1, 0, 0);
+    m_col[2] = Vec4<T>(0, 0, 1, 0);
+    m_col[3] = Vec4<T>(0, 0, 0, 1);
+}
+
 template<typename T> Mat4<T>
 lt::perspective(f32 fovy, f32 aspect_ratio, f32 znear, f32 zfar)
 {
@@ -51,11 +60,6 @@ lt::look_at(const Vec3<T> eye, const Vec3<T> center, const Vec3<T> up)
     Vec3<T> s = lt::cross(f, up).norm();
     Vec3<T> u = lt::cross(s, f);
 
-    /* Mat4 view = mat4( */
-    /*          s.x,              u.x,               -f.x,       0, */
-    /*          s.y,              u.y,               -f.y,       0, */
-    /*          s.z,              u.z,               -f.z,       0, */
-    /*     -vec_dot(s, eye), -vec_dot(u, eye),  vec_dot(f, eye), 1); */
     return Mat4<T>( s.x,   s.y,   s.z,   -lt::dot(s, eye),
                     u.x,   u.y,   u.z,   -lt::dot(u, eye),
                    -f.x,  -f.y,  -f.z,    lt::dot(f, eye),
@@ -67,6 +71,7 @@ template Mat4<f32>::Mat4(f32 m00, f32 m01, f32 m02, f32 m03,
                          f32 m20, f32 m21, f32 m22, f32 m23,
                          f32 m30, f32 m31, f32 m32, f32 m33);
 template Mat4<f32>::Mat4(f32 diag);
+template Mat4<f32>::Mat4();
 
 template Mat4<f32> lt::perspective(f32 fovy, f32 aspect_ratio, f32 znear, f32 zfar);
 template Mat4<f32> lt::look_at<f32>(const Vec3<f32> eye, const Vec3<f32> center, const Vec3<f32> up);

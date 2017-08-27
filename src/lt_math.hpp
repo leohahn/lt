@@ -86,6 +86,9 @@ union Vec3
     inline Vec3<T> operator-(Vec3<T> rhs) const {return Vec3<T>(x-rhs.x, y-rhs.y, z-rhs.z);}
     inline Vec3<T> operator-() const {return Vec3<T>(-x, -y, -z);}
     inline Vec3<T> operator+(Vec3<T> rhs) const {return Vec3<T>(x+rhs.x, y+rhs.y, z+rhs.z);}
+
+    inline void operator-=(Vec3<T> rhs) { x -= rhs.x; y -= rhs.y; z -= rhs.z; }
+    inline void operator+=(Vec3<T> rhs) { x += rhs.x; y += rhs.y; z += rhs.z; }
 };
 
 typedef Vec3<i32> Vec3i;
@@ -122,11 +125,14 @@ typedef Vec4<f32> Vec4f;
 namespace lt
 {
 
-template<typename T> inline T
-dot(const Vec2<T> a, const Vec2<T> b) {return (a.x * b.x) + (a.y * b.y);}
+inline f32
+radians(f32 angle) { return angle * (M_PI / 180.0f); }
 
 template<typename T> inline T
-dot(const Vec3<T> lhs, const Vec3<T> rhs) {return (lhs.x * rhs.x) + (lhs.y * rhs.y) + (lhs.z * rhs.z);}
+dot(const Vec2<T> a, const Vec2<T> b) { return (a.x * b.x) + (a.y * b.y); }
+
+template<typename T> inline T
+dot(const Vec3<T> lhs, const Vec3<T> rhs) { return (lhs.x * rhs.x) + (lhs.y * rhs.y) + (lhs.z * rhs.z); }
 
 template<typename T> inline Vec2<T>
 projection(const Vec2<T> p, const Vec2<T> plane)
@@ -154,6 +160,7 @@ cross(const Vec3<T> a, const Vec3<T> b)
 template<typename T>
 union Mat4
 {
+    Mat4();
     Mat4(T diag);
     Mat4(T m00, T m01, T m02, T m03,
          T m10, T m11, T m12, T m13,
