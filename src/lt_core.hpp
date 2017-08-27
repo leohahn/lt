@@ -23,6 +23,8 @@ typedef double      f64;
 typedef size_t      usize;
 typedef ptrdiff_t   isize;
 
+typedef unsigned char uchar;
+
 static_assert(sizeof(u8) == 1, "u8 should have 1 byte");
 static_assert(sizeof(u16) == 2, "u16 should have 2 bytes");
 static_assert(sizeof(u32) == 4, "u16 should have 4 bytes");
