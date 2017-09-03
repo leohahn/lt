@@ -333,10 +333,7 @@ rotate(const Quat<T>& q, T angle, const Quat<T>& axis)
     LT_Assert(lt::norm(rotor) == 1);
     // In the case that rotor is NOT normalized.
     // return rotor * point * lt::inverse(rotor);
-    Quat<T> first_rotation = rotor * q;
-    Quat<T> second_rotation = first_rotation * lt::conjugate(rotor);
-    // return (rotor * q) * lt::conjugate(rotor);
-    return second_rotation;
+    return rotor * q * lt::conjugate(rotor);
 }
 
 }
