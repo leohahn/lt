@@ -56,8 +56,8 @@ lt::perspective(f32 fovy, f32 aspect_ratio, f32 znear, f32 zfar)
 template<typename T> Mat4<T>
 lt::look_at(const Vec3<T> eye, const Vec3<T> center, const Vec3<T> up)
 {
-    Vec3<T> f = (center - eye).norm();
-    Vec3<T> s = lt::cross(f, up).norm();
+    Vec3<T> f = lt::normalize(center - eye);
+    Vec3<T> s = lt::normalize(lt::cross(f, up));
     Vec3<T> u = lt::cross(s, f);
 
     return Mat4<T>( s.x,   s.y,   s.z,   -lt::dot(s, eye),
