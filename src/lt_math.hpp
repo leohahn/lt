@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <cmath>
+#include <iostream>
 
 #include "lt_core.hpp"
 #include "math.h"
@@ -32,6 +33,7 @@ struct Size2f
 //
 
 template<typename T>
+
 union Vec2
 {
     T val[2];
@@ -208,9 +210,14 @@ union Mat4
                   T m20, T m21, T m22, T m23,
                   T m30, T m31, T m32, T m33);
 
-    inline Vec4<T> operator()(isize row, isize col) const
+    inline T operator()(isize row, isize col) const
     {
-        return m_col[row][col];
+        return m_col[col].val[row];
+    }
+
+    inline T& operator()(isize row, isize col)
+    {
+        return m_col[col].val[row];
     }
 
     inline T *data() const
@@ -222,7 +229,19 @@ private:
     Vec4<T> m_col[4];
 };
 
-typedef Mat4<f32> Mat4f;
+template<typename T> inline
+std::ostream& operator<<(std::ostream& os, const Mat4<T>& mat)
+{
+    for (isize row = 0; row < 4; ++row)
+    {
+        os << "| ";
+        for (isize col = 0; col < 4; ++col) os << mat(row, col) << " ";
+        os << "|";
+        os << "\n";
+    }
+    return os;
+}
+
 
 namespace lt
 {
@@ -232,6 +251,12 @@ perspective(f32 fovy, f32 aspect_ratio, f32 znear, f32 zfar);
 
 template<typename T> Mat4<T>
 look_at(const Vec3<T> eye, const Vec3<T> center, const Vec3<T> up);
+
+template<typename T> Mat4<T>
+translation(Mat4<T> in_mat, Vec3<T> amount);
+
+template<typename T> Mat4<T>
+scale(Mat4<T> in_mat, Vec3<T> scale);
 
 }
 
@@ -344,6 +369,7 @@ typedef Vec3<i32> Vec3i;
 typedef Vec3<f32> Vec3f;
 typedef Vec4<i32> Vec4i;
 typedef Vec4<f32> Vec4f;
+typedef Mat4<f32> Mat4f;
 typedef Quat<f32> Quatf;
 typedef Quat<f64> Quatd;
 
