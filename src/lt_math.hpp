@@ -82,6 +82,7 @@ union Vec3
     };
 
     explicit Vec3() : x(0), y(0), z(0) {}
+    explicit Vec3(T val) : x(val), y(val), z(val) {}
     explicit Vec3(T x, T y, T z) : x(x), y(y), z(z) {}
 
     inline Vec3<T> operator-(const Vec3<T>& rhs) const { return Vec3<T>(x-rhs.x, y-rhs.y, z-rhs.z); }
