@@ -226,6 +226,8 @@ union Mat4
         return (T*)&m_col[0].val[0];
     }
 
+    Mat4<T> operator*(const Mat4<T>& rhs);
+
 private:
     Vec4<T> m_col[4];
 };
@@ -243,6 +245,32 @@ std::ostream& operator<<(std::ostream& os, const Mat4<T>& mat)
     return os;
 }
 
+template<typename T> Mat4<T>
+operator*(const Mat4<T> &lhs, const Mat4<T> &rhs)
+{
+    Mat4<T> ret(1.0);
+    // First row
+    ret(0,0) = lhs(0,0)*rhs(0,0) + lhs(0,1)*rhs(1,0) + lhs(0,2)*rhs(2,0) + lhs(0,3)*rhs(3,0);
+    ret(0,1) = lhs(0,0)*rhs(0,1) + lhs(0,1)*rhs(1,1) + lhs(0,2)*rhs(2,1) + lhs(0,3)*rhs(3,1);
+    ret(0,2) = lhs(0,0)*rhs(0,2) + lhs(0,1)*rhs(1,2) + lhs(0,2)*rhs(2,2) + lhs(0,3)*rhs(3,2);
+    ret(0,3) = lhs(0,0)*rhs(0,3) + lhs(0,1)*rhs(1,3) + lhs(0,2)*rhs(2,3) + lhs(0,3)*rhs(3,3);
+    // Second row
+    ret(1,0) = lhs(1,0)*rhs(0,0) + lhs(1,1)*rhs(1,0) + lhs(1,2)*rhs(2,0) + lhs(1,3)*rhs(3,0);
+    ret(1,1) = lhs(1,0)*rhs(0,1) + lhs(1,1)*rhs(1,1) + lhs(1,2)*rhs(2,1) + lhs(1,3)*rhs(3,1);
+    ret(1,2) = lhs(1,0)*rhs(0,2) + lhs(1,1)*rhs(1,2) + lhs(1,2)*rhs(2,2) + lhs(1,3)*rhs(3,2);
+    ret(1,3) = lhs(1,0)*rhs(0,3) + lhs(1,1)*rhs(1,3) + lhs(1,2)*rhs(2,3) + lhs(1,3)*rhs(3,3);
+    // Third row
+    ret(2,0) = lhs(2,0)*rhs(0,0) + lhs(2,1)*rhs(1,0) + lhs(2,2)*rhs(2,0) + lhs(2,3)*rhs(3,0);
+    ret(2,1) = lhs(2,0)*rhs(0,1) + lhs(2,1)*rhs(1,1) + lhs(2,2)*rhs(2,1) + lhs(2,3)*rhs(3,1);
+    ret(2,2) = lhs(2,0)*rhs(0,2) + lhs(2,1)*rhs(1,2) + lhs(2,2)*rhs(2,2) + lhs(2,3)*rhs(3,2);
+    ret(2,3) = lhs(2,0)*rhs(0,3) + lhs(2,1)*rhs(1,3) + lhs(2,2)*rhs(2,3) + lhs(2,3)*rhs(3,3);
+    // Fourth row
+    ret(3,0) = lhs(3,0)*rhs(0,0) + lhs(3,1)*rhs(1,0) + lhs(3,2)*rhs(2,0) + lhs(3,3)*rhs(3,0);
+    ret(3,1) = lhs(3,0)*rhs(0,1) + lhs(3,1)*rhs(1,1) + lhs(3,2)*rhs(2,1) + lhs(3,3)*rhs(3,1);
+    ret(3,2) = lhs(3,0)*rhs(0,2) + lhs(3,1)*rhs(1,2) + lhs(3,2)*rhs(2,2) + lhs(3,3)*rhs(3,2);
+    ret(3,3) = lhs(3,0)*rhs(0,3) + lhs(3,1)*rhs(1,3) + lhs(3,2)*rhs(2,3) + lhs(3,3)*rhs(3,3);
+    return ret;
+}
 
 namespace lt
 {
@@ -254,10 +282,10 @@ template<typename T> Mat4<T>
 look_at(const Vec3<T> eye, const Vec3<T> center, const Vec3<T> up);
 
 template<typename T> Mat4<T>
-translation(Mat4<T> in_mat, Vec3<T> amount);
+translation(const Mat4<T>& in_mat, Vec3<T> amount);
 
 template<typename T> Mat4<T>
-scale(Mat4<T> in_mat, Vec3<T> scale);
+scale(const Mat4<T> &in_mat, Vec3<T> scale);
 
 }
 

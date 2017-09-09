@@ -67,21 +67,21 @@ lt::look_at(const Vec3<T> eye, const Vec3<T> center, const Vec3<T> up)
 }
 
 template<typename T> Mat4<T>
-lt::translation(Mat4<T> in_mat, Vec3<T> amount)
+lt::translation(const Mat4<T>& in_mat, Vec3<T> amount)
 {
-    in_mat(0, 3) += amount.x;
-    in_mat(1, 3) += amount.y;
-    in_mat(2, 3) += amount.z;
-    return in_mat;
+    return in_mat * Mat4<T>(1, 0, 0, amount.x,
+                            0, 1, 0, amount.y,
+                            0, 0, 1, amount.z,
+                            0, 0, 0,         1);
 }
 
 template<typename T> Mat4<T>
-lt::scale(Mat4<T> in_mat, Vec3<T> scale)
+lt::scale(const Mat4<T> &in_mat, Vec3<T> scale)
 {
-    in_mat(0, 0) *= scale.x;
-    in_mat(1, 1) *= scale.y;
-    in_mat(2, 2) *= scale.z;
-    return in_mat;
+    return in_mat * Mat4<T>(scale.x,       0,       0,        0,
+                                  0, scale.y,       0,        0,
+                                  0,       0, scale.z,        0,
+                                  0,       0,       0,        1);
 }
 
 template Mat4<f32>::Mat4(f32 m00, f32 m01, f32 m02, f32 m03,
@@ -93,5 +93,5 @@ template Mat4<f32>::Mat4();
 
 template Mat4<f32> lt::perspective(f32 fovy, f32 aspect_ratio, f32 znear, f32 zfar);
 template Mat4<f32> lt::look_at<f32>(const Vec3<f32> eye, const Vec3<f32> center, const Vec3<f32> up);
-template Mat4<f32> lt::translation<f32>(Mat4<f32> in_mat, Vec3<f32> amount);
-template Mat4<f32> lt::scale(Mat4<f32> in_mat, Vec3<f32> scale);
+template Mat4<f32> lt::translation<f32>(const Mat4<f32> &in_mat, Vec3<f32> amount);
+template Mat4<f32> lt::scale(const Mat4<f32> &in_mat, Vec3<f32> scale);
