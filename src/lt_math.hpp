@@ -41,6 +41,7 @@ union Vec2
         T x, y;
     };
 
+    Vec2(): x(0), y(0) {}
     explicit Vec2(T x, T y): x(x), y(y) {}
 
     inline const Vec2<T>& operator-(Vec2<T> rhs) const {return Vec2<T>(x - rhs.x, y - rhs.y);}
@@ -81,7 +82,7 @@ union Vec3
         T i, j, k;
     };
 
-    explicit Vec3() : x(0), y(0), z(0) {}
+    Vec3() : x(0), y(0), z(0) {}
     explicit Vec3(T val) : x(val), y(val), z(val) {}
     explicit Vec3(T x, T y, T z) : x(x), y(y), z(z) {}
 
@@ -134,7 +135,7 @@ union Vec4
         T r, g, b, a;
     };
 
-    explicit Vec4(): x(0), y(0), z(0), w(0) {}
+    Vec4(): x(0), y(0), z(0), w(0) {}
     explicit Vec4(T x, T y, T z, T w): x(x), y(y), z(z), w(w) {}
     explicit Vec4(const Vec3<T>& v, T w): x(v.x), y(v.y), z(v.z), w(w) {}
 };
@@ -201,39 +202,37 @@ cross(const Vec3<T>& a, const Vec3<T>& b)
 //
 // Column major
 //
-template<typename T>
-union Mat4
+union Mat4f
 {
-    explicit Mat4();
-    explicit Mat4(T diag);
-    explicit Mat4(T m00, T m01, T m02, T m03,
-                  T m10, T m11, T m12, T m13,
-                  T m20, T m21, T m22, T m23,
-                  T m30, T m31, T m32, T m33);
-
-    inline T operator()(isize row, isize col) const
+    explicit Mat4f();
+    explicit Mat4f(f32 diag);
+    explicit Mat4f(f32 m00, f32 m01, f32 m02, f32 m03,
+				   f32 m10, f32 m11, f32 m12, f32 m13,
+				   f32 m20, f32 m21, f32 m22, f32 m23,
+				   f32 m30, f32 m31, f32 m32, f32 m33);
+	
+    inline f32 operator()(isize row, isize col) const
     {
         return m_col[col].val[row];
     }
 
-    inline T& operator()(isize row, isize col)
+    inline f32& operator()(isize row, isize col)
     {
         return m_col[col].val[row];
     }
 
-    inline T *data() const
+    inline f32 *data() const
     {
-        return (T*)&m_col[0].val[0];
+        return (f32*)&m_col[0].val[0];
     }
 
-    Mat4<T> operator*(const Mat4<T>& rhs);
+    Mat4f operator*(const Mat4f& rhs);
 
 private:
-    Vec4<T> m_col[4];
+    Vec4<f32> m_col[4];
 };
 
-template<typename T> inline
-std::ostream& operator<<(std::ostream& os, const Mat4<T>& mat)
+inline std::ostream& operator<<(std::ostream& os, const Mat4f &mat)
 {
     for (isize row = 0; row < 4; ++row)
     {
@@ -245,10 +244,10 @@ std::ostream& operator<<(std::ostream& os, const Mat4<T>& mat)
     return os;
 }
 
-template<typename T> Mat4<T>
-operator*(const Mat4<T> &lhs, const Mat4<T> &rhs)
+inline Mat4f
+operator*(const Mat4f &lhs, const Mat4f &rhs)
 {
-    Mat4<T> ret(1.0);
+    Mat4f ret(1.0);
     // First row
     ret(0,0) = lhs(0,0)*rhs(0,0) + lhs(0,1)*rhs(1,0) + lhs(0,2)*rhs(2,0) + lhs(0,3)*rhs(3,0);
     ret(0,1) = lhs(0,0)*rhs(0,1) + lhs(0,1)*rhs(1,1) + lhs(0,2)*rhs(2,1) + lhs(0,3)*rhs(3,1);
@@ -275,17 +274,33 @@ operator*(const Mat4<T> &lhs, const Mat4<T> &rhs)
 namespace lt
 {
 
-template<typename T> Mat4<T>
-perspective(f32 fovy, f32 aspect_ratio, f32 znear, f32 zfar);
+Mat4f perspective(f32 fovy, f32 aspect_ratio, f32 znear, f32 zfar);
 
-template<typename T> Mat4<T>
-look_at(const Vec3<T> eye, const Vec3<T> center, const Vec3<T> up);
+Mat4f look_at(const Vec3<f32> eye, const Vec3<f32> center, const Vec3<f32> up);
 
-template<typename T> Mat4<T>
-translation(const Mat4<T>& in_mat, Vec3<T> amount);
+Mat4f translation(const Mat4f &in_mat, Vec3<f32> amount);
 
-template<typename T> Mat4<T>
-scale(const Mat4<T> &in_mat, Vec3<T> scale);
+Mat4f scale(const Mat4f &in_mat, Vec3<f32> scale);
+
+inline Mat4f
+rotation_x(const Mat4f &in_mat, f32 degrees)
+{
+	f32 rad = lt::radians(degrees);
+	return in_mat * Mat4f(1, 0, 0, 0,
+						  0, cos(rad), -sin(rad), 0,
+						  0, sin(rad), cos(rad), 0,
+						  0, 0, 0, 1);
+}
+
+inline Mat4f
+rotation_y(const Mat4f &in_mat, f32 degrees)
+{
+	f32 rad = lt::radians(degrees);
+	return in_mat * Mat4f(cos(rad), 0, sin(rad), 0,
+						  0, 1, 0, 0,
+						  -sin(rad), 0, cos(rad), 0,
+						  0, 0, 0, 1);
+}
 
 }
 
@@ -321,13 +336,13 @@ union Quat
         return Quat<T>(std::cos(angle/static_cast<T>(2)), sin_axis);
     }
 
-    template<typename S> Mat4<S>
+    Mat4f
     to_mat4() const
     {
-        return Mat4<S>(s,   -v.i, -v.j, -v.k,
-                       v.i,    s, -v.k,  v.j,
-                       v.j,  v.k,    s, -v.i,
-                       v.k, -v.j,  v.i,    s);
+        return Mat4f(s,   -v.i, -v.j, -v.k,
+					 v.i,    s, -v.k,  v.j,
+					 v.j,  v.k,    s, -v.i,
+					 v.k, -v.j,  v.i,    s);
     }
 
     Quat<T>
@@ -398,7 +413,6 @@ typedef Vec3<i32> Vec3i;
 typedef Vec3<f32> Vec3f;
 typedef Vec4<i32> Vec4i;
 typedef Vec4<f32> Vec4f;
-typedef Mat4<f32> Mat4f;
 typedef Quat<f32> Quatf;
 typedef Quat<f64> Quatd;
 
