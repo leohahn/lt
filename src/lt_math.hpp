@@ -44,7 +44,7 @@ union Vec2
     Vec2(): x(0), y(0) {}
     explicit Vec2(T x, T y): x(x), y(y) {}
 
-    inline const Vec2<T>& operator-(Vec2<T> rhs) const {return Vec2<T>(x - rhs.x, y - rhs.y);}
+    inline Vec2<T> operator-(Vec2<T> rhs) const {return Vec2<T>(x - rhs.x, y - rhs.y);}
 };
 
 template<typename T> static inline Vec2<T>
@@ -92,6 +92,7 @@ union Vec3
 
     inline void operator-=(const Vec3<T>& rhs) { x -= rhs.x; y -= rhs.y; z -= rhs.z; }
     inline void operator+=(const Vec3<T>& rhs) { x += rhs.x; y += rhs.y; z += rhs.z; }
+    inline bool operator==(const Vec3<T>& rhs) { return x == rhs.x && y == rhs.y && z == rhs.z; }
 };
 
 template<typename T> static inline Vec3<T>
