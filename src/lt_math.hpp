@@ -400,10 +400,8 @@ rotate(const Quat<T>& q, T angle, const Quat<T>& axis)
     const Quat<T> rotor = Quat<T>::rotation(angle, axis.v);
 
     // NOTE: Assert that the rotor is normalized, to avoid calculating the inverse instead of the conjugate.
-    LT_Assert(lt::norm(rotor) == 1);
-    // In the case that rotor is NOT normalized.
-    // return rotor * point * lt::inverse(rotor);
-    return rotor * q * lt::conjugate(rotor);
+    // LT_Assert(lt::norm(rotor) == 1);
+    return rotor * q * lt::normalize(lt::conjugate(rotor));
 }
 
 }
