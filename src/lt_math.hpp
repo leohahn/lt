@@ -205,7 +205,7 @@ cross(const Vec3<T>& a, const Vec3<T>& b)
 //
 union Mat4f
 {
-    explicit Mat4f();
+    Mat4f();
     explicit Mat4f(f32 diag);
     explicit Mat4f(f32 m00, f32 m01, f32 m02, f32 m03,
 				   f32 m10, f32 m11, f32 m12, f32 m13,
