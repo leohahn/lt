@@ -277,6 +277,8 @@ namespace lt
 
 Mat4f perspective(f32 fovy, f32 aspect_ratio, f32 znear, f32 zfar);
 
+Mat4f orthographic(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far);
+
 Mat4f look_at(const Vec3<f32> eye, const Vec3<f32> center, const Vec3<f32> up);
 
 Mat4f translation(const Mat4f &in_mat, Vec3<f32> amount);
