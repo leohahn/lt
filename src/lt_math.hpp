@@ -65,6 +65,8 @@ operator*(const Vec2<T>& v, f64 k)
 // Definition of a vector structure.
 //
 
+template<typename T> union Vec4;
+
 template<typename T>
 union Vec3
 {
@@ -85,6 +87,7 @@ union Vec3
     Vec3() : x(0), y(0), z(0) {}
     explicit Vec3(T val) : x(val), y(val), z(val) {}
     explicit Vec3(T x, T y, T z) : x(x), y(y), z(z) {}
+    explicit Vec3(Vec4<T> v) : x(v.x), y(v.y), z(v.z) {}
 
     inline Vec3<T> operator-(const Vec3<T>& rhs) const { return Vec3<T>(x-rhs.x, y-rhs.y, z-rhs.z); }
     inline Vec3<T> operator-()                   const { return Vec3<T>(-x, -y, -z); }
@@ -118,7 +121,7 @@ operator*(f64 k, const Vec3<T>& v)
 
 /////////////////////////////////////////////////////////
 //
-// Vector3
+// Vector4
 //
 // Definition of a vector structure.
 //
@@ -221,6 +224,11 @@ union Mat4f
     {
         return m_col[col].val[row];
     }
+
+	inline Vec4<f32> col(isize col)
+	{
+		return m_col[col];
+	}
 
     inline f32 *data() const
     {
