@@ -14,7 +14,6 @@ file_read_contents(const char *filename)
     FILE *fp = fopen(filename, "rb"); // open in binary mode.
     void *file_data = NULL;
 
-    // TODO(leo), @Robustness: Actually check if the file exists before trying to open it.
     if (!fp)
     {
         FileContents *ret = (FileContents*)malloc(sizeof(*ret));
