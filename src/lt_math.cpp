@@ -71,16 +71,16 @@ Mat4f
 lt::translation(const Mat4f& in_mat, Vec3<f32> amount)
 {
     return in_mat * Mat4f(1, 0, 0, amount.x,
-                            0, 1, 0, amount.y,
-                            0, 0, 1, amount.z,
-                            0, 0, 0,         1);
+                          0, 1, 0, amount.y,
+                          0, 0, 1, amount.z,
+                          0, 0, 0,         1);
 }
 
 Mat4f
 lt::scale(const Mat4f &in_mat, Vec3<f32> scale)
 {
     return in_mat * Mat4f(scale.x,       0,       0,        0,
-						  0, scale.y,       0,        0,
-						  0,       0, scale.z,        0,
-						  0,       0,       0,        1);
+						  0,       scale.y,       0,        0,
+						  0,             0, scale.z,        0,
+						  0,             0,       0,        1);
 }

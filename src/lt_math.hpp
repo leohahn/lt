@@ -297,10 +297,10 @@ inline Mat4f
 rotation_x(const Mat4f &in_mat, f32 degrees)
 {
 	f32 rad = lt::radians(degrees);
-	return in_mat * Mat4f(1, 0, 0, 0,
-						  0, cos(rad), -sin(rad), 0,
-						  0, sin(rad), cos(rad), 0,
-						  0, 0, 0, 1);
+	return in_mat * Mat4f(1,        0,         0,    0,
+						  0, cos(rad), -sin(rad),    0,
+						  0, sin(rad),  cos(rad),    0,
+						  0,        0,         0,    1);
 }
 
 inline Mat4f
