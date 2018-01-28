@@ -68,21 +68,24 @@ operator*(const Vec2<T>& v, f64 k)
 template<typename T> union Vec4;
 
 template<typename T>
-union Vec3
+struct Vec3
 {
-    T val[3];
-    struct
-    {
-        T x, y, z;
-    };
-    struct
-    {
-        T r, g, b;
-    };
-    struct
-    {
-        T i, j, k;
-    };
+	union
+	{
+		T val[3];
+		struct
+		{
+			T x, y, z;
+		};
+		struct
+		{
+			T r, g, b;
+		};
+		struct
+		{
+			T i, j, k;
+		};
+	};
 
     Vec3() : x(0), y(0), z(0) {}
     explicit Vec3(T val) : x(val), y(val), z(val) {}
@@ -97,6 +100,13 @@ union Vec3
     inline void operator+=(const Vec3<T>& rhs) { x += rhs.x; y += rhs.y; z += rhs.z; }
     inline bool operator==(const Vec3<T>& rhs) { return x == rhs.x && y == rhs.y && z == rhs.z; }
 };
+
+template<typename T> static inline std::ostream &
+operator<<(std::ostream& os, const Vec3<T> &v)
+{
+	os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+	return os;
+}
 
 template<typename T> static inline Vec3<T>
 operator*(const Vec3<T>& v, f32 k)
@@ -165,7 +175,11 @@ normalize(const Vec2<T>& v)
 template<typename T> inline Vec3<T>
 normalize(const Vec3<T>& v)
 {
-    return Vec3<T>(v.x/lt::norm(v), v.y/lt::norm(v), v.z/lt::norm(v));
+	const f32 EPSILON = 0.0001f;
+	f32 length = lt::norm(v);
+	if (length <= EPSILON) return v;
+
+    return Vec3<T>(v.x/length, v.y/length, v.z/length);
 }
 
 template<typename T> inline Vec4<T>
