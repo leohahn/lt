@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include <cmath>
 #include <iostream>
+#include <iomanip>
+#include <cstring>
+#include <type_traits>
+#include <limits>
 
 #include "lt_core.hpp"
 #include "math.h"
@@ -25,6 +29,15 @@ struct Size2f
 
     explicit Size2f(f32 width, f32 height) : width(width), height(height) {}
 };
+
+template<typename T> typename std::enable_if<!std::numeric_limits<T>::is_integer, bool>::type
+almost_equal(T x, T y, T epsilon = std::numeric_limits<T>::epsilon())
+{
+	// http://realtimecollisiondetection.net/blog/?p=89
+	bool almost = std::abs(x - y) <= epsilon * std::max(std::max(static_cast<T>(1), std::abs(x)), std::abs(y));
+	return almost;
+}
+
 /////////////////////////////////////////////////////////
 //
 // Vector2
@@ -98,8 +111,43 @@ struct Vec3
 
     inline void operator-=(const Vec3<T>& rhs) { x -= rhs.x; y -= rhs.y; z -= rhs.z; }
     inline void operator+=(const Vec3<T>& rhs) { x += rhs.x; y += rhs.y; z += rhs.z; }
-    inline bool operator==(const Vec3<T>& rhs) { return x == rhs.x && y == rhs.y && z == rhs.z; }
 };
+
+template<typename T> inline bool
+operator==(const Vec3<T> &a, const Vec3<T> &b)
+{
+	return a.x == b.x && a.y == b.y && a.z == b.z;
+}
+
+template<> inline bool
+operator==<f32>(const Vec3<f32> &a, const Vec3<f32> &b)
+{
+    return almost_equal(a.x, b.x) && almost_equal(a.y, b.y) && almost_equal(a.z, b.z);
+}
+
+template<> inline bool
+operator==<f64>(const Vec3<f64> &a, const Vec3<f64> &b)
+{
+	return almost_equal(a.x, b.x) && almost_equal(a.y, b.y) && almost_equal(a.z, b.z);
+}
+
+template<typename T> inline bool
+operator!=(const Vec3<T> &a, const Vec3<T> &b)
+{
+	return a.x != b.x && a.y != b.y && a.z != b.z;
+}
+
+template<> inline bool
+operator!=<f32>(const Vec3<f32> &a, const Vec3<f32> &b)
+{
+	return !almost_equal(a.x, b.x) || !almost_equal(a.y, b.y) || !almost_equal(a.z, b.z);
+}
+
+template<> inline bool
+operator!=<f64>(const Vec3<f64> &a, const Vec3<f64> &b)
+{
+	return !almost_equal(a.x, b.x) || !almost_equal(a.y, b.y) || !almost_equal(a.z, b.z);
+}
 
 template<typename T> static inline std::ostream &
 operator<<(std::ostream& os, const Vec3<T> &v)
@@ -354,6 +402,9 @@ union Quat
     explicit Quat(T s, const Vec3<T>& v) : s(s), v(v) {}
     explicit Quat() : s(0), v(Vec3<T>(0, 0, 0)) {}
 
+	static inline Quat<T>
+	identity() { return Quat<T>(1, 0, 0, 0); }
+
     static inline Quat<T>
     rotation(T angle, const Vec3<T>& axis)
     {
@@ -370,24 +421,30 @@ union Quat
 					 v.k, -v.j,  v.i,    s);
     }
 
-    Quat<T>
+    inline Quat<T>
     operator+(const Quat<T>& rhs) const
     {
-        return Quat<T>(s+rhs.scalar, v.i+rhs.i, v.j+rhs.j, v.k+rhs.k);
+        return Quat<T>(s+rhs.s, v.i+rhs.v.i, v.j+rhs.v.j, v.k+rhs.v.k);
     }
 
-    Quat<T>
-    operator*(f32 k) const
-    {
-        return Quat<T>(s*k, v*k);
-    }
-
-    Quat<T>
-    operator*(f64 k) const
-    {
-        return Quat<T>(s*k, v*k);
-    }
+	inline Quat<T>
+	operator/(T k) const
+	{
+		return Quat<T>(val[0]/k, val[1]/k, val[2]/k, val[3]/k);
+	}
 };
+
+template<typename T> inline Quat<T>
+operator*(const Quat<T> &q, T k)
+{
+	return Quat<T>(q.s*k, q.v*k);
+}
+
+template<typename T> inline Quat<T>
+operator*(T k, const Quat<T> &q)
+{
+	return Quat<T>(q.s*k, q.v*k);
+}
 
 template<typename T> static inline Quat<T>
 operator*(const Quat<T>& lhs, const Quat<T>& rhs)
@@ -396,36 +453,100 @@ operator*(const Quat<T>& lhs, const Quat<T>& rhs)
                    rhs.s*lhs.v + lhs.s*rhs.v + lt::cross(lhs.v, rhs.v));
 }
 
+template<typename T> inline std::ostream &
+operator<<(std::ostream &os, const Quat<T> &q)
+{
+	os << "(" << std::setprecision(3) << q.val[0] << ", ";
+	os << q.val[1] << ", " << q.val[2] << ", " << q.val[3] << ")";
+    return os;
+}
+
+template<typename T> inline bool
+operator==(const Quat<T> &a, const Quat<T> &b)
+{
+	return (a.val[0] == b.val[0]) &&
+		(a.val[1] == b.val[1]) &&
+		(a.val[2] == b.val[2]) &&
+		(a.val[3] == b.val[3]);
+}
+
+template<> inline bool
+operator==<f32>(const Quat<f32> &a, const Quat<f32> &b)
+{
+	return almost_equal(a.val[0], b.val[0]) &&
+		almost_equal(a.val[1], b.val[1]) &&
+		almost_equal(a.val[2], b.val[2]) &&
+		almost_equal(a.val[3], b.val[3]);
+}
+
+template<> inline bool
+operator==<f64>(const Quat<f64> &a, const Quat<f64> &b)
+{
+	return almost_equal(a.val[0], b.val[0]) &&
+		almost_equal(a.val[1], b.val[1]) &&
+		almost_equal(a.val[2], b.val[2]) &&
+		almost_equal(a.val[3], b.val[3]);
+}
+
 namespace lt
 {
 
 template<typename T> inline T
-norm(const Quat<T>& q)
+norm(const Quat<T> &q)
 {
     T v = q.val[0]*q.val[0] + q.val[1]*q.val[1] + q.val[2]*q.val[2] + q.val[3]*q.val[3];
     return std::sqrt(v);
 }
 
+template<typename T> inline T
+sqr_norm(const Quat<T> &q)
+{
+    T v = q.val[0]*q.val[0] + q.val[1]*q.val[1] + q.val[2]*q.val[2] + q.val[3]*q.val[3];
+    return v;
+}
+
 template<typename T> inline Quat<T>
-normalize(const Quat<T>& q)
+normalize(const Quat<T> &q)
 {
     return Quat<T>(q.s/lt::norm(q), q.v.i/lt::norm(q), q.v.j/lt::norm(q), q.v.k/lt::norm(q));
 }
 
 template<typename T> inline Quat<T>
-conjugate(const Quat<T>& q)
+conjugate(const Quat<T> &q)
 {
     return Quat<T>(q.s, -q.v);
 }
 
 template<typename T> inline Quat<T>
-rotate(const Quat<T>& q, T angle, const Quat<T>& axis)
+inverse(const Quat<T> &q)
+{
+	Quat<T> inv = lt::conjugate(q) / lt::sqr_norm(q);
+    Quat<T> test = q*inv;
+    LT_Assert(test == Quat<T>::identity());
+	return inv;
+}
+
+template<typename T> inline Quat<T>
+rotate(const Quat<T> &q, T angle, const Quat<T> &axis)
 {
     const Quat<T> rotor = Quat<T>::rotation(angle, axis.v);
+    return rotor * q * lt::inverse(rotor);
+}
 
-    // NOTE: Assert that the rotor is normalized, to avoid calculating the inverse instead of the conjugate.
-    // LT_Assert(lt::norm(rotor) == 1);
-    return rotor * q * lt::normalize(lt::conjugate(rotor));
+template<typename T> T
+dot(const Quat<T> &a, const Quat<T> &b)
+{
+	return a.val[0]*b.val[0] + a.val[1]*b.val[1] + a.val[2]*b.val[2] + a.val[3]*b.val[3];
+}
+
+template<typename T> Quat<T>
+slerp(const Quat<T> &start_q, const Quat<T> &end_q, T t)
+{
+	LT_Assert(t >= 0);
+	LT_Assert(t <= 1);
+
+	T angle = std::acos(lt::dot(start_q, end_q));
+	return (sin((static_cast<T>(1) - t) * angle) * start_q + sin(t * angle) * end_q) / sin(angle);
 }
 
 }
