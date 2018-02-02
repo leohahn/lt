@@ -5,6 +5,24 @@
 #include <cstdint>
 #include <cstdlib>
 
+#ifdef __GNUC__
+#define LT_GCC 1
+#endif
+#ifdef __clang__
+#define LT_CLANG 1
+#endif
+#ifdef _MSC_VER
+#define LT_MSC 1
+#endif
+
+#if defined(__x86_64__) || defined(_M_X86) || defined(__i386__)
+#define LT_ARCH_X86 1
+#endif
+
+#if (LT_GCC || LT_CLANG) && LT_ARCH_X86
+#include <x86intrin.h>
+#endif
+
 // Make type names more consistent and easier to write.
 typedef uint8_t     u8;
 typedef uint16_t    u16;
@@ -128,6 +146,16 @@ is_little_endian()
 {
     i32 num = 1;
     return (*(char*)&num == 1);
+}
+
+lt_internal inline u64
+rdtsc()
+{
+#if LT_ARCH_X86 && (LT_CLANG || LT_GCC)
+	return __rdtsc();
+#else
+	LT_Assert(false);
+#endif
 }
 
 }
