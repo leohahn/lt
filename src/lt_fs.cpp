@@ -1,12 +1,29 @@
 #include "lt_fs.hpp"
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
 
-#if defined(__unix__)
+#if LT_PLATFORM_UNIX
 #include <sys/stat.h>
 #endif
+
+#if LT_OS_LINUX
+#include <climits>
+#endif
+
+std::string
+ltfs::absolute_path(const char *relative_path)
+{
+#if LT_OS_LINUX
+    char *buf = realpath(relative_path, nullptr);
+    std::string abs_path(buf);
+    free(buf);
+    return abs_path;
+#else
+#error "Not yet defined on other operating systems"
+#endif
+}
 
 FileContents *
 file_read_contents(const char *filename)

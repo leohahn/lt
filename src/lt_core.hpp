@@ -14,6 +14,18 @@
 #ifdef _MSC_VER
 #define LT_MSC 1
 #endif
+#ifdef __linux__
+#define LT_OS_LINUX 1
+#endif
+#ifdef _WIN32
+#define LT_OS_WINDOWS 1
+#endif
+#ifdef __APPLE__
+#define LT_OS_MACOS 1
+#endif
+#if defined(unix) || defined(__unix__) || defined(__unix)
+# define LT_PLATFORM_UNIX 1
+#endif
 
 #if defined(__x86_64__) || defined(_M_X86) || defined(__i386__)
 #define LT_ARCH_X86 1

@@ -1,6 +1,7 @@
 #ifndef LT_FS_HPP
 #define LT_FS_HPP
 
+#include <string>
 #include "lt_core.hpp"
 
 enum FileError
@@ -25,5 +26,12 @@ struct FileContents
 FileContents *file_read_contents(const char *filename);
 void          file_free_contents(FileContents *fc);
 isize         file_get_size(const char *filename);
+
+namespace ltfs
+{
+
+std::string absolute_path(const char *relative_path);
+
+}
 
 #endif
