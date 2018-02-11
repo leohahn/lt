@@ -31,6 +31,8 @@ namespace ltfs
 {
 
 std::string absolute_path(const char *relative_path);
+bool        file_exists(const std::string &path);
+std::string join(const std::string &p1, const std::string &p2);
 
 }
 

@@ -25,6 +25,33 @@ ltfs::absolute_path(const char *relative_path)
 #endif
 }
 
+bool
+ltfs::file_exists(const std::string &path)
+{
+#if LT_PLATFORM_UNIX
+    struct stat buf;
+    return (stat(path.c_str(), &buf) == 0);
+#else
+#error "Currently only implemented on UNIX systems."
+#endif
+}
+
+std::string
+ltfs::join(const std::string &p1, const std::string &p2)
+{
+#if LT_PLATFORM_UNIX
+    std::string res(p1);
+
+    if (res[res.size()-1] != '/') res += '/';
+    if (p2[0] == '/') res.append(p2, 1, std::string::npos);
+    else res.append(p2);
+
+    return res;
+#else
+#error "Currently only implemented on UNIX systems."
+#endif
+}
+
 FileContents *
 file_read_contents(const char *filename)
 {

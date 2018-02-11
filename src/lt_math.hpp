@@ -276,7 +276,7 @@ union Mat4f
 				   f32 m10, f32 m11, f32 m12, f32 m13,
 				   f32 m20, f32 m21, f32 m22, f32 m23,
 				   f32 m30, f32 m31, f32 m32, f32 m33);
-	
+
     inline f32 operator()(isize row, isize col) const
     {
         return m_col[col].val[row];
@@ -303,14 +303,16 @@ private:
     Vec4<f32> m_col[4];
 };
 
-inline std::ostream& operator<<(std::ostream& os, const Mat4f &mat)
+inline std::ostream &operator<<(std::ostream& os, const Mat4f &mat)
 {
-    for (isize row = 0; row < 4; ++row)
+    for (i32 row = 0; row < 4; row++)
     {
-        os << "| ";
-        for (isize col = 0; col < 4; ++col) os << mat(row, col) << " ";
-        os << "|";
-        os << "\n";
+        os << "|  ";
+        for (i32 col = 0; col < 4; col++)
+        {
+            os << std::setw(9) << std::setprecision(3) << mat(row, col) << "  ";
+        }
+        os << "|\n";
     }
     return os;
 }
