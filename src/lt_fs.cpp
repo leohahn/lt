@@ -13,12 +13,19 @@
 #endif
 
 std::string
-ltfs::absolute_path(const char *relative_path)
+ltfs::absolute_path(const char *relative_path, bool *error)
 {
 #if LT_OS_LINUX
     char *buf = realpath(relative_path, nullptr);
+    if (!buf)
+    {
+        if (error) *error = true;
+        return relative_path;
+    }
+
     std::string abs_path(buf);
     free(buf);
+    if (error) *error = false;
     return abs_path;
 #else
 #error "Not yet defined on other operating systems"

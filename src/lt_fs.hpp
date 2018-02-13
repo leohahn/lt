@@ -30,7 +30,7 @@ isize         file_get_size(const char *filename);
 namespace ltfs
 {
 
-std::string absolute_path(const char *relative_path);
+std::string absolute_path(const char *relative_path, bool *error = nullptr);
 bool        file_exists(const std::string &path);
 std::string join(const std::string &p1, const std::string &p2);
 
