@@ -55,6 +55,7 @@ union Vec2
     };
 
     Vec2(): x(0), y(0) {}
+    explicit Vec2(T k): x(k), y(k) {}
     explicit Vec2(T x, T y): x(x), y(y) {}
 
     inline Vec2<T> operator-(Vec2<T> rhs) const {return Vec2<T>(x - rhs.x, y - rhs.y);}
@@ -65,10 +66,18 @@ operator*(const Vec2<T>& v, f32 k)
 {
     return Vec2<T>(v.x * k, v.y * k);
 }
+
 template<typename T> static inline Vec2<T>
 operator*(const Vec2<T>& v, f64 k)
 {
     return Vec2<T>(v.x * k, v.y * k);
+}
+
+template<typename T> static inline std::ostream &
+operator<<(std::ostream& os, const Vec2<T> &v)
+{
+    os << "(" << v.x << ", " << v.y << ")";
+    return os;
 }
 
 /////////////////////////////////////////////////////////
@@ -350,6 +359,8 @@ namespace lt
 Mat4f perspective(f32 fovy, f32 aspect_ratio, f32 znear, f32 zfar);
 
 Mat4f orthographic(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far);
+
+Mat4f orthographic(f32 left, f32 right, f32 bottom, f32 top);
 
 Mat4f look_at(const Vec3<f32> eye, const Vec3<f32> center, const Vec3<f32> up);
 

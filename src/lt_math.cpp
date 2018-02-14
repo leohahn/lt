@@ -46,12 +46,21 @@ lt::perspective(f32 fovy, f32 aspect_ratio, f32 znear, f32 zfar)
 }
 
 Mat4f
+lt::orthographic(f32 l, f32 r, f32 b, f32 t)
+{
+    return Mat4f(2/(r-l), 0,       0,        -(r+l)/(r-l),
+                 0,       2/(t-b), 0,        -(t+b)/(t-b),
+                 0,       0,       1,         0,
+                 0,       0,       0,         1);
+}
+
+Mat4f
 lt::orthographic(f32 l, f32 r, f32 b, f32 t, f32 n, f32 f)
 {
 	return Mat4f(2/(r-l), 0,       0,        -(r+l)/(r-l),
-				 0,       2/(t-b), 0,        -(t+b)/(t-b),
-				 0,       0,       -2/(f-n), -(f+n)/(f-n),
-				 0,       0,       0,         1);
+               0,       2/(t-b), 0,        -(t+b)/(t-b),
+               0,       0,       -2/(f-n), -(f+n)/(f-n),
+               0,       0,       0,         1);
 }
 
 Mat4f
