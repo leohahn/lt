@@ -13,10 +13,10 @@
 #endif
 
 std::string
-ltfs::absolute_path(const char *relative_path, bool *error)
+ltfs::absolute_path(const std::string &relative_path, bool *error)
 {
 #if LT_OS_LINUX
-    char *buf = realpath(relative_path, nullptr);
+    char *buf = realpath(relative_path.c_str(), nullptr);
     if (!buf)
     {
         if (error) *error = true;
