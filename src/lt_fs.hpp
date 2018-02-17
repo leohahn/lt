@@ -23,7 +23,7 @@ struct FileContents
     FileError error;
 };
 
-FileContents *file_read_contents(const char *filename);
+FileContents *file_read_contents(const char *filename, bool insert_final_zero = false);
 void          file_free_contents(FileContents *fc);
 isize         file_get_size(const char *filename);
 

@@ -60,14 +60,14 @@ ltfs::join(const std::string &p1, const std::string &p2)
 }
 
 FileContents *
-file_read_contents(const char *filename)
+file_read_contents(const char *filename, bool insert_final_zero)
 {
     FILE *fp = fopen(filename, "rb"); // open in binary mode.
     void *file_data = NULL;
 
     if (!fp)
     {
-        FileContents *ret = (FileContents*)malloc(sizeof(*ret));
+        FileContents *ret =  (FileContents*)calloc(1, sizeof(*ret));
         ret->error = FileError_NotExists;
         ret->data = NULL;
         ret->size = -1;
@@ -86,7 +86,9 @@ file_read_contents(const char *filename)
         return ret;
     }
 
-    file_data = (char*)malloc(sizeof(char) * file_size);
+    file_data = (insert_final_zero)
+        ? (char*)calloc(1, sizeof(char) * file_size + 1)
+        : (char*)calloc(1, sizeof(char) * file_size);
 
     if (!file_data)
     {
