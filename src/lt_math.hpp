@@ -73,6 +73,12 @@ operator*(const Vec2<T>& v, f64 k)
     return Vec2<T>(v.x * k, v.y * k);
 }
 
+template<typename T> static inline Vec2<T>
+operator+(const Vec2<T> &a, const Vec2<T> &b)
+{
+    return Vec2<T>(a.x + b.x, a.y + b.y);
+}
+
 template<typename T> static inline std::ostream &
 operator<<(std::ostream& os, const Vec2<T> &v)
 {
