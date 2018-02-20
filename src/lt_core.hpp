@@ -113,20 +113,25 @@ static_assert(sizeof(f64) == 8, "f64 should have 8 bytes");
     } while(0)
 #endif
 
-#ifndef LT_Fail
+#ifndef LT_Panic
 #  ifdef LT_DEBUG
-#    define LT_Fail(...) do {                                        \
-        fprintf(stderr, "****** RUNTIME FAILURE ******\n");          \
-        fprintf(stderr, "%s(line %d)", __FILE__, __LINE__);          \
-        fprintf(stderr, __VA_ARGS__);                                \
-        fprintf(stderr, "*****************************\n");          \
-        fflush(stderr);                                              \
-        __builtin_trap();                                            \
+#    define LT_Panic2(msg, file, number) do {                         \
+        fprintf(stderr, "******************************\n");            \
+        fprintf(stderr, "*********** PANIC!! **********\n");            \
+        fprintf(stderr, "**                            \n");            \
+        fprintf(stderr, "**  Message: %s\n", #msg);                     \
+        fprintf(stderr, "**  %s (line %d)\n", file, number);            \
+        fprintf(stderr, "**                            \n");            \
+        fprintf(stderr, "******************************\n");            \
+        fprintf(stderr, "******************************\n");            \
+        fflush(stderr);                                                 \
+        __builtin_trap();                                               \
     } while(0)
+#    define LT_Panic(msg) LT_Panic2(msg, __FILE__, __LINE__)
 #  else
-#    define LT_Fail(...)
+#    define LT_Panic(msg)
 #  endif // LT_DEBUG
-#endif // LT_Fail
+#endif // LT_Panic
 
 #ifndef LT_Assert
 #  ifdef LT_DEBUG

@@ -92,7 +92,7 @@ file_read_contents(const char *filename, bool insert_final_zero)
 
     if (!file_data)
     {
-        LT_Fail("Failed allocating memory\n");
+        LT_Panic("Failed allocating memory\n");
     }
 
     isize newlen = fread(file_data, sizeof(u8), file_size, fp);
