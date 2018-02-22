@@ -106,6 +106,27 @@ static_assert(sizeof(f64) == 8, "f64 should have 8 bytes");
 #define lt_in_closed_interval(x, min, max)  ((min) <= (x) && (x) <= (max))
 #endif
 
+// NOTE: This uses the computer definition of Kilobyte == 1024 bytes,
+// and not the international standard that Kilobyte == 1000 bytes.
+// This is necessary for using with memory allocation.
+#ifndef Kilobytes
+#define Kilobytes(x) ((usize) ((x) << 10))
+#endif
+#ifndef Megabytes
+#define Megabytes(x) ((usize) ((x) << 20))
+#endif
+#ifndef Gigabytes
+#define Gigabytes(x) ((usize) ((x) << 30))
+#endif
+
+#ifndef BytesToKilobytes
+#define BytesToKilobytes(x) ((x)/1024.0f)
+#endif
+
+static_assert(Kilobytes(1) == 1024);
+static_assert(Megabytes(1) == 1024*1024);
+static_assert(Gigabytes(1) == 1024*1024*1024);
+
 #ifndef LT_Free
 #define LT_Free(p) do { \
         free(p);        \

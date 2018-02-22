@@ -98,22 +98,32 @@ template<typename T> union Vec4;
 template<typename T>
 struct Vec3
 {
-	union
-	{
-		T val[3];
-		struct
-		{
-			T x, y, z;
-		};
-		struct
-		{
-			T r, g, b;
-		};
-		struct
-		{
-			T i, j, k;
-		};
-	};
+    union
+    {
+        T val[3];
+        struct
+        {
+            T x, y, z;
+        };
+        struct
+        {
+            T r, g, b;
+        };
+        struct
+        {
+            T i, j, k;
+        };
+        struct
+        {
+            Vec2<T> xy;
+            f32     _ignored_z;
+        };
+        struct
+        {
+            f32     _ignored_x;
+            Vec2<T> yz;
+        };
+    };
 
     Vec3() : x(0), y(0), z(0) {}
     explicit Vec3(T val) : x(val), y(val), z(val) {}
@@ -123,6 +133,7 @@ struct Vec3
     inline Vec3<T> operator-(const Vec3<T>& rhs) const { return Vec3<T>(x-rhs.x, y-rhs.y, z-rhs.z); }
     inline Vec3<T> operator-()                   const { return Vec3<T>(-x, -y, -z); }
     inline Vec3<T> operator+(const Vec3<T>& rhs) const { return Vec3<T>(x+rhs.x, y+rhs.y, z+rhs.z); }
+    inline Vec2<T> xz() const { return Vec2<T>(x, z); }
 
     inline void operator-=(const Vec3<T>& rhs) { x -= rhs.x; y -= rhs.y; z -= rhs.z; }
     inline void operator+=(const Vec3<T>& rhs) { x += rhs.x; y += rhs.y; z += rhs.z; }
