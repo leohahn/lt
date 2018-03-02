@@ -176,6 +176,12 @@ static_assert(Gigabytes(1) == 1024*1024*1024);
 #  endif // LT_DEBUG
 #endif // LT_Assert
 
+// Helpful macro to specify parts of the code that need to be finished,
+// without having to write too much.
+#ifndef LT_Unfinished
+#define LT_Unfinished LT_Panic("Finish this part.")
+#endif
+
 namespace lt
 {
 
@@ -192,7 +198,7 @@ rdtsc()
 #if LT_ARCH_X86 && (LT_CLANG || LT_GCC)
 	return __rdtsc();
 #else
-	LT_Assert(false);
+#error "The function rdtsc is not implemented for this platform."
 #endif
 }
 

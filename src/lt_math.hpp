@@ -125,10 +125,10 @@ struct Vec3
         };
     };
 
-    Vec3() : x(0), y(0), z(0) {}
-    explicit Vec3(T val) : x(val), y(val), z(val) {}
-    explicit Vec3(T x, T y, T z) : x(x), y(y), z(z) {}
-    explicit Vec3(Vec4<T> v) : x(v.x), y(v.y), z(v.z) {}
+    Vec3() noexcept : x(0), y(0), z(0) {}
+    explicit Vec3(T val) noexcept : x(val), y(val), z(val) {}
+    explicit Vec3(T x, T y, T z) noexcept : x(x), y(y), z(z) {}
+    explicit Vec3(Vec4<T> v) noexcept : x(v.x), y(v.y), z(v.z) {}
 
     inline Vec3<T> operator-(const Vec3<T>& rhs) const { return Vec3<T>(x-rhs.x, y-rhs.y, z-rhs.z); }
     inline Vec3<T> operator-()                   const { return Vec3<T>(-x, -y, -z); }
