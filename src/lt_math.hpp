@@ -550,10 +550,10 @@ conjugate(const Quat<T> &q)
 template<typename T> inline Quat<T>
 inverse(const Quat<T> &q)
 {
-	Quat<T> inv = lt::conjugate(q) / lt::sqr_norm(q);
+    Quat<T> inv = lt::conjugate(q) / lt::sqr_norm(q);
     Quat<T> test = q*inv;
     LT_Assert(test == Quat<T>::identity());
-	return inv;
+    return inv;
 }
 
 template<typename T> inline Quat<T>
@@ -572,11 +572,22 @@ dot(const Quat<T> &a, const Quat<T> &b)
 template<typename T> Quat<T>
 slerp(const Quat<T> &start_q, const Quat<T> &end_q, T t)
 {
-	LT_Assert(t >= 0);
-	LT_Assert(t <= 1);
+    LT_Assert(t >= 0);
+    LT_Assert(t <= 1);
 
-	T angle = std::acos(lt::dot(start_q, end_q));
-	return (sin((static_cast<T>(1) - t) * angle) * start_q + sin(t * angle) * end_q) / sin(angle);
+    const T EPSILON = static_cast<T>(0.0001); // FIXME: Find a more specific epsilon value here.
+    T start_dot_end = lt::dot(start_q, end_q);
+
+    if (start_dot_end < 1-EPSILON)
+    {
+        T angle = std::acos(start_dot_end);
+        LT_Assert(angle != static_cast<T>(0));
+        return (sin((static_cast<T>(1) - t) * angle) * start_q + sin(t * angle) * end_q) / sin(angle);
+    }
+    else
+    {
+        return start_q;
+    }
 }
 
 }
