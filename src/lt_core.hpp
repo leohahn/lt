@@ -202,6 +202,13 @@ rdtsc()
 #endif
 }
 
+lt_internal inline int
+sign_float(f32 val)
+{
+    const f32 EPSILON = 0.00001f;
+    return (EPSILON < val) - (val < EPSILON);
+}
+
 }
 
 #endif // LT_CORE_HPP
