@@ -552,8 +552,7 @@ template<typename T> inline Quat<T>
 inverse(const Quat<T> &q)
 {
     Quat<T> inv = lt::conjugate(q) / lt::sqr_norm(q);
-    Quat<T> test = q*inv;
-    LT_Assert(test == Quat<T>::identity());
+    LT_Assert(q*inv == Quat<T>::identity());
     return inv;
 }
 
@@ -583,7 +582,8 @@ slerp(const Quat<T> &start_q, const Quat<T> &end_q, T t)
     {
         T angle = std::acos(start_dot_end);
         LT_Assert(angle != static_cast<T>(0));
-        return (sin((static_cast<T>(1) - t) * angle) * start_q + sin(t * angle) * end_q) / sin(angle);
+        return (std::sin((static_cast<T>(1) - t) * angle) * start_q + std::sin(t * angle) * end_q) /
+            std::sin(angle);
     }
     else
     {
