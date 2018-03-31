@@ -90,6 +90,10 @@ static_assert(sizeof(f64) == 8, "f64 should have 8 bytes");
 #define LT_Unused(x) ((void)(x))
 #endif
 
+#ifndef LT_Toggle
+#define LT_Toggle(x) ((x) = !(x))
+#endif
+
 #ifndef LT_Count
 #define LT_Count(arr) (sizeof((arr))/sizeof((arr)[0]))
 #endif
