@@ -186,6 +186,10 @@ static_assert(Gigabytes(1) == 1024*1024*1024);
 #define LT_Unfinished LT_Panic("Finish this part.")
 #endif
 
+#ifndef LT_Unreachable
+#define LT_Unreachable LT_Panic("This code should be unreachable.");
+#endif
+
 namespace lt
 {
 
