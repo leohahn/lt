@@ -431,10 +431,9 @@ union Quat
 
     explicit Quat(T s, T i, T j, T k) : val{s, i, j, k} {}
     explicit Quat(T s, const Vec3<T>& v) : s(s), v(v) {}
-    explicit Quat() : s(0), v(Vec3<T>(0, 0, 0)) {}
+    Quat() : s(0), v(Vec3<T>(0, 0, 0)) {}
 
-	static inline Quat<T>
-	identity() { return Quat<T>(1, 0, 0, 0); }
+    static inline Quat<T> identity() { return Quat<T>(1, 0, 0, 0); }
 
     static inline Quat<T>
     rotation(T angle, const Vec3<T>& axis)
@@ -458,23 +457,23 @@ union Quat
         return Quat<T>(s+rhs.s, v.i+rhs.v.i, v.j+rhs.v.j, v.k+rhs.v.k);
     }
 
-	inline Quat<T>
-	operator/(T k) const
-	{
-		return Quat<T>(val[0]/k, val[1]/k, val[2]/k, val[3]/k);
-	}
+    inline Quat<T>
+    operator/(T k) const
+    {
+        return Quat<T>(val[0]/k, val[1]/k, val[2]/k, val[3]/k);
+    }
 };
 
 template<typename T> inline Quat<T>
 operator*(const Quat<T> &q, T k)
 {
-	return Quat<T>(q.s*k, q.v*k);
+    return Quat<T>(q.s*k, q.v*k);
 }
 
 template<typename T> inline Quat<T>
 operator*(T k, const Quat<T> &q)
 {
-	return Quat<T>(q.s*k, q.v*k);
+    return Quat<T>(q.s*k, q.v*k);
 }
 
 template<typename T> static inline Quat<T>
@@ -487,36 +486,36 @@ operator*(const Quat<T>& lhs, const Quat<T>& rhs)
 template<typename T> inline std::ostream &
 operator<<(std::ostream &os, const Quat<T> &q)
 {
-	os << "(" << std::setprecision(3) << q.val[0] << ", ";
-	os << q.val[1] << ", " << q.val[2] << ", " << q.val[3] << ")";
+    os << "(" << std::setprecision(3) << q.val[0] << ", ";
+    os << q.val[1] << ", " << q.val[2] << ", " << q.val[3] << ")";
     return os;
 }
 
 template<typename T> inline bool
 operator==(const Quat<T> &a, const Quat<T> &b)
 {
-	return (a.val[0] == b.val[0]) &&
-		(a.val[1] == b.val[1]) &&
-		(a.val[2] == b.val[2]) &&
-		(a.val[3] == b.val[3]);
+    return (a.val[0] == b.val[0]) &&
+        (a.val[1] == b.val[1]) &&
+        (a.val[2] == b.val[2]) &&
+        (a.val[3] == b.val[3]);
 }
 
 template<> inline bool
 operator==<f32>(const Quat<f32> &a, const Quat<f32> &b)
 {
-	return almost_equal(a.val[0], b.val[0]) &&
-		almost_equal(a.val[1], b.val[1]) &&
-		almost_equal(a.val[2], b.val[2]) &&
-		almost_equal(a.val[3], b.val[3]);
+    return almost_equal(a.val[0], b.val[0]) &&
+        almost_equal(a.val[1], b.val[1]) &&
+        almost_equal(a.val[2], b.val[2]) &&
+        almost_equal(a.val[3], b.val[3]);
 }
 
 template<> inline bool
 operator==<f64>(const Quat<f64> &a, const Quat<f64> &b)
 {
-	return almost_equal(a.val[0], b.val[0]) &&
-		almost_equal(a.val[1], b.val[1]) &&
-		almost_equal(a.val[2], b.val[2]) &&
-		almost_equal(a.val[3], b.val[3]);
+    return almost_equal(a.val[0], b.val[0]) &&
+        almost_equal(a.val[1], b.val[1]) &&
+        almost_equal(a.val[2], b.val[2]) &&
+        almost_equal(a.val[3], b.val[3]);
 }
 
 namespace lt
