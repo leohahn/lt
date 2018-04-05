@@ -267,6 +267,9 @@ template<typename T> inline T
 radians(T angle) { return angle * (static_cast<T>(M_PI) / static_cast<T>(180)); }
 
 template<typename T> inline T
+degrees(T angle) { return angle * (static_cast<T>(180) / static_cast<T>(M_PI)); }
+
+template<typename T> inline T
 dot(const Vec2<T>& a, const Vec2<T>& b) { return (a.x * b.x) + (a.y * b.y); }
 
 template<typename T> inline T
